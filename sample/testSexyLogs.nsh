@@ -1,4 +1,6 @@
 ; you have to include NSISLog plugin to use SexyLogs
+; download it at http://nsis.sourceforge.net/NSISLog_plug-in and put
+; in some folder then import it as follows
 !addplugindir "plugins"
 
 !include "WinMessages.nsh"

@@ -25,11 +25,30 @@ Macros:
   ```
   !insertmacro logInit "$PLUGINSDIR\sampleLog.log"
   ```  
-- **log**```!insertmacro logInfo "Hello World!"```
-- **logDebug**  ```!insertmacro logDebug "Hello World!"```
-- **logInfo**   ```!insertmacro logInfo "Hello World!"```
-- **logWarn**   ```!insertmacro logWarn "Hello World!"```
-- **logError**  ```!insertmacro logError "Hello World!"```
-- **logCopyTo**: copies the log file to some other place. You may want to call it from '.onInstSuccess' and '.onInstFailed' functions.
+- **log**: logs a message without a date, time and logging level
+
+  ```!insertmacro logInfo "Hello World!"```
+  
+- **logDebug**: logs a message at Debug level
+
+  ```!insertmacro logDebug "Hello World!"```
+  
+- **logInfo**: logs a message at Info level
+
+  ```!insertmacro logInfo "Hello World!"```
+  
+- **logWarn**: logs a warning message
+
+  ```!insertmacro logWarn "Hello World!"```
+  
+- **logError**: logs an error message
+  
+  ```!insertmacro logError "Hello World!"```
+  
+- **logCopyTo**: copies the log file to some other place.
+
+  You can use placeholders in the file name: %Y - year, %m - month, %d - day
+
+  You may want to call it from '.onInstSuccess' and '.onInstFailed' functions because they are called at the end when you close the installer.
 
   ```!insertmacro logCopyTo "$INSTDIR\sampleLog.log"```

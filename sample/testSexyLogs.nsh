@@ -33,7 +33,7 @@ Function page.custom
   !insertmacro logDebug "Hello World!"
   !insertmacro logWarning "Hello World!"
   !insertmacro logError "Hello World!"
-  !insertmacro logCopyTo "$PLUGINSDIR\sampleLogCopy.log"
+  !insertmacro logCopyTo "$PLUGINSDIR\sampleLogCopy-%Y-%m-%d.log"
  
   ; Create a label - x,y,width,height,text
 	${NSD_CreateLabel} 0 0 100% 30 "Check out the log file at $PLUGINSDIR\sampleLog.log"

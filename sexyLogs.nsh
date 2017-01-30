@@ -14,37 +14,65 @@
 ; See sample installer in "sample\testSexyLogs.nsh".
 ;
 !include FileFunc.nsh
+!include TextFunc.nsh
 
-Var /GLOBAL SexyLogsLogName
+Var /GLOBAL SexyLogsLogPath
+
+Var /GLOBAL SexyLogsDay    
+Var /GLOBAL SexyLogsMonth
+Var /GLOBAL SexyLogsYear
+Var /GLOBAL SexyLogsDayOfWeekName
+Var /GLOBAL SexyLogsHour
+Var /GLOBAL SexyLogsMinute
+Var /GLOBAL SexyLogsSeconds
 
 !macro logInit filePath
-  StrCpy $SexyLogsLogName ${filePath} 
+  StrCpy $SexyLogsLogPath ${filePath} 
 !macroend
 
 !macro log message
-  nsislog::log "$SexyLogsLogName" "${message}"
+  nsislog::log "$SexyLogsLogPath" "${message}"
 !macroend
 
 !macro logInfo message
-  ${GetTime} "" "LS" $0 $1 $2 $3 $4 $5 $6
-  IntFmt $4 "%0.2u" $4
-  nsislog::log "$SexyLogsLogName" "$2-$1-$0 $4:$5:$6 INFO  ${message}"
+  ${GetTime} "" "LS" $SexyLogsDay $SexyLogsMonth $SexyLogsYear $SexyLogsDayOfWeekName $SexyLogsHour $SexyLogsMinute $SexyLogsSeconds
+  IntFmt $SexyLogsHour "%0.2u" $SexyLogsHour
+  nsislog::log "$SexyLogsLogPath" "$SexyLogsYear-$SexyLogsMonth-$SexyLogsDay $SexyLogsHour:$SexyLogsMinute:$SexyLogsSeconds INFO  ${message}"
 !macroend
 
 !macro logDebug message
-  ${GetTime} "" "LS" $0 $1 $2 $3 $4 $5 $6
-  IntFmt $4 "%0.2u" $4
-  nsislog::log "$SexyLogsLogName" "$2-$1-$0 $4:$5:$6 DEBUG ${message}"
+  ${GetTime} "" "LS" $SexyLogsDay $SexyLogsMonth $SexyLogsYear $SexyLogsDayOfWeekName $SexyLogsHour $SexyLogsMinute $SexyLogsSeconds
+  IntFmt $SexyLogsHour "%0.2u" $SexyLogsHour
+  nsislog::log "$SexyLogsLogPath" "$SexyLogsYear-$SexyLogsMonth-$SexyLogsDay $SexyLogsHour:$SexyLogsMinute:$SexyLogsSeconds DEBUG ${message}"
 !macroend
 
 !macro logWarning message
-  ${GetTime} "" "LS" $0 $1 $2 $3 $4 $5 $6
-  IntFmt $4 "%0.2u" $4
-  nsislog::log "$SexyLogsLogName" "$2-$1-$0 $4:$5:$6 WARN  ${message}"
+  ${GetTime} "" "LS" $SexyLogsDay $SexyLogsMonth $SexyLogsYear $SexyLogsDayOfWeekName $SexyLogsHour $SexyLogsMinute $SexyLogsSeconds
+  IntFmt $SexyLogsHour "%0.2u" $SexyLogsHour
+  nsislog::log "$SexyLogsLogPath" "$SexyLogsYear-$SexyLogsMonth-$SexyLogsDay $SexyLogsHour:$SexyLogsMinute:$SexyLogsSeconds WARN  ${message}"
 !macroend
 
 !macro logError message
-  ${GetTime} "" "LS" $0 $1 $2 $3 $4 $5 $6
-  IntFmt $4 "%0.2u" $4
-  nsislog::log "$SexyLogsLogName" "$2-$1-$0 $4:$5:$6 ERROR ${message}"
+  ${GetTime} "" "LS" $SexyLogsDay $SexyLogsMonth $SexyLogsYear $SexyLogsDayOfWeekName $SexyLogsHour $SexyLogsMinute $SexyLogsSeconds
+  IntFmt $SexyLogsHour "%0.2u" $SexyLogsHour
+  nsislog::log "$SexyLogsLogPath" "$SexyLogsYear-$SexyLogsMonth-$SexyLogsDay $SexyLogsHour:$SexyLogsMinute:$SexyLogsSeconds ERROR ${message}"
+!macroend
+
+
+;
+; Copy the log file to another destination. If the target file
+; already exist then just append the content of the log to the
+; end of the file.
+;
+Var SexyLogs_fileExists
+!macro logCopyTo targetLogPath
+  StrCpy $SexyLogs_fileExists "false"
+  IfFileExists "$INSTDIR\logs\${LOG_FILE_NAME}" 0 +2
+    StrCpy $SexyLogs_fileExists "true"
+  
+  ${If} $SexyLogs_fileExists == "true"
+    ${FileJoin} '${targetLogPath}' '$SexyLogsLogPath' '${targetLogPath}'
+  ${Else}
+    CopyFiles "$SexyLogsLogPath" "${targetLogPath}"
+  ${EndIf}  
 !macroend

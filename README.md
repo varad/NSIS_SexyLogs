@@ -1,5 +1,7 @@
 # NSIS_SexyLogs
-A set of macros which make logging in NSIS easier. It automatically logs date, time and logging level.
+A set of macros which make logging in NSIS easier. It automatically logs date, time and logging level. 
+
+If you log date and time manually without SexyLogs you have to write another two lines of code for every log messge. These macros do that work for you behind the scenes and make your code more concise.
 
 It depends on NSISLog plugin http://nsis.sourceforge.net/NSISLog_plug-in
 

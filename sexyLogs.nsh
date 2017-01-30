@@ -67,7 +67,7 @@ Var /GLOBAL SexyLogsSeconds
 Var SexyLogs_fileExists
 !macro logCopyTo targetLogPath
   StrCpy $SexyLogs_fileExists "false"
-  IfFileExists "$INSTDIR\logs\${LOG_FILE_NAME}" 0 +2
+  IfFileExists "${targetLogPath}" 0 +2
     StrCpy $SexyLogs_fileExists "true"
   
   ${If} $SexyLogs_fileExists == "true"

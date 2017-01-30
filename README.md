@@ -20,7 +20,7 @@ Sample log file:
   ```
 
 Macros:
-- **logInit**: initializes Sexy log telling it where to log
+- **logInit**: initializes SexyLogs telling it where to log.
 
   ```
   !insertmacro logInit "$PLUGINSDIR\sampleLog.log"
@@ -30,3 +30,6 @@ Macros:
 - **logInfo**   ```!insertmacro logInfo "Hello World!"```
 - **logWarn**   ```!insertmacro logWarn "Hello World!"```
 - **logError**  ```!insertmacro logError "Hello World!"```
+- **logCopyTo**: copies the log file to some other place. You may want to call it from '.onInstSuccess' and '.onInstFailed' functions.
+
+  ```!insertmacro logCopyTo "$INSTDIR\sampleLog.log"```

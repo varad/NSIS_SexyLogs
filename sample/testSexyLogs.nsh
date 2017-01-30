@@ -1,50 +1,56 @@
-; A set of macros which make logging in NSIS easier.
-; 
-; It's basically wrapper around NSISLog plugin and adds a date and time
-; to every logger call. Allows you to log at DEBUG, INFO, WARN or ERROR level.
-;
-; NSISLog plugin: http://nsis.sourceforge.net/NSISLog_plug-in
-;
-; Sample call: 
-; !insertmacro logInfo "Hello World!"
-; 
-; The "sampleLog.log" in $PLUGINSDIR folder then contains:
-; 2017-01-29 21:14:17 INFO  Hello World! 
-;
-; See sample installer in "sample\testSexyLogs.nsh".
-;
-!include FileFunc.nsh
+; you have to include NSISLog plugin to use SexyLogs
+; download it at http://nsis.sourceforge.net/NSISLog_plug-in and put
+; in some folder then import it as follows
+!addplugindir "plugins"
 
-Var /GLOBAL SexyLogsLogName
+!include "WinMessages.nsh"
+!include "MUI2.nsh"
+!include "nsDialogs.nsh"
 
-!macro logInit filePath
-  StrCpy $SexyLogsLogName ${filePath} 
-!macroend
+; you have to include SexyLogs
+!include "..\sexyLogs.nsh"
+ 
+OutFile "testSexyLogs.exe"
+ 
+Section "EveryNsisScriptRequiresAtLeastOneSection"
+SectionEnd
 
-!macro log message
-  nsislog::log "$SexyLogsLogName" "${message}"
-!macroend
+!insertmacro MUI_LANGUAGE "English"    
+ 
+Page Custom page.custom
+Function page.custom
+                
+  ; Create dialog. We have to pop the value from the stack
+  nsDialogs::Create 1018
+  Pop $0
+  
+  ; This is how to use SexyLogs
+  !insertmacro logInit "$PLUGINSDIR\sampleLog.log"
+  !insertmacro log "+---------------------------------------+"
+  !insertmacro log "| SexyLogs - Make NSIS logs sexy again! |"
+  !insertmacro log "+---------------------------------------+"
+  !insertmacro logInfo "Hello World!"
+  !insertmacro logDebug "Hello World!"
+  !insertmacro logWarning "Hello World!"
+  !insertmacro logError "Hello World!"
+  !insertmacro logCopyTo "$PLUGINSDIR\sampleLogCopy.log"
+ 
+  ; Create a label - x,y,width,height,text
+	${NSD_CreateLabel} 0 0 100% 30 "Check out the log file at $PLUGINSDIR\sampleLog.log"
+  
+  ; Show GUI
+  nsDialogs::Show
+  
+FunctionEnd 
 
-!macro logInfo message
-  ${GetTime} "" "LS" $0 $1 $2 $3 $4 $5 $6
-  IntFmt $4 "%0.2u" $4
-  nsislog::log "$SexyLogsLogName" "$2-$1-$0 $4:$5:$6 INFO  ${message}"
-!macroend
+; It may be useful to copy the log to the installation folder
+; if the installer successfully finishes
+;Function .onInstSuccess
+;  !insertmacro logCopyTo "$PLUGINSDIR\sampleLogCopy.log"
+;FunctionEnd
 
-!macro logDebug message
-  ${GetTime} "" "LS" $0 $1 $2 $3 $4 $5 $6
-  IntFmt $4 "%0.2u" $4
-  nsislog::log "$SexyLogsLogName" "$2-$1-$0 $4:$5:$6 DEBUG ${message}"
-!macroend
-
-!macro logWarning message
-  ${GetTime} "" "LS" $0 $1 $2 $3 $4 $5 $6
-  IntFmt $4 "%0.2u" $4
-  nsislog::log "$SexyLogsLogName" "$2-$1-$0 $4:$5:$6 WARN  ${message}"
-!macroend
-
-!macro logError message
-  ${GetTime} "" "LS" $0 $1 $2 $3 $4 $5 $6
-  IntFmt $4 "%0.2u" $4
-  nsislog::log "$SexyLogsLogName" "$2-$1-$0 $4:$5:$6 ERROR ${message}"
-!macroend
+; It may be useful to copy the log to the installation folder
+; if the installer failed
+;Function .onInstFailed
+;  !insertmacro logCopyTo "$PLUGINSDIR\sampleLogCopy.log"
+;FunctionEnd
